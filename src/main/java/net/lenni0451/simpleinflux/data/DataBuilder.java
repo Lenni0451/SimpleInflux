@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class DataBuilder {
 
-    public DataBuilder create(final String measurement) {
+    public static DataBuilder create(final String measurement) {
         return new DataBuilder(measurement);
     }
 
