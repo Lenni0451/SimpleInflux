@@ -4,7 +4,7 @@ import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
 import net.lenni0451.commons.httpclient.RetryHandler;
 import net.lenni0451.commons.httpclient.constants.ContentTypes;
-import net.lenni0451.commons.httpclient.constants.Headers;
+import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
 import net.lenni0451.simpleinflux.data.DataBuilder;
@@ -21,13 +21,13 @@ public class InfluxDBConnection {
 
     public InfluxDBConnection(final ConnectionProperties connectionProperties) {
         this.httpClient = new HttpClient()
-                .setHeader(Headers.AUTHORIZATION, "Token " + connectionProperties.getApiToken())
+                .setHeader(HttpHeaders.AUTHORIZATION, "Token " + connectionProperties.getApiToken())
                 .setConnectTimeout(connectionProperties.getConnectTimeout())
                 .setReadTimeout(connectionProperties.getReadTimeout())
                 .setRetryHandler(new RetryHandler(connectionProperties.getConnectRetries(), connectionProperties.getConnectRetryAfterTries()))
                 .setFollowRedirects(connectionProperties.isFollowRedirects())
                 .setCookieManager(null) //Cookies are not required
-                .setHeader(Headers.ACCEPT, ContentTypes.APPLICATION_JSON.getMimeType()); //We only accept JSON responses
+                .setHeader(HttpHeaders.ACCEPT, ContentTypes.APPLICATION_JSON.getMimeType()); //We only accept JSON responses
 
         String url = connectionProperties.getAddress();
         if (!url.endsWith("/")) url += "/";
