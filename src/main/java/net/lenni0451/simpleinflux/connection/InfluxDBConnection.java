@@ -2,11 +2,11 @@ package net.lenni0451.simpleinflux.connection;
 
 import net.lenni0451.commons.httpclient.HttpClient;
 import net.lenni0451.commons.httpclient.HttpResponse;
-import net.lenni0451.commons.httpclient.RetryHandler;
 import net.lenni0451.commons.httpclient.constants.ContentTypes;
 import net.lenni0451.commons.httpclient.constants.HttpHeaders;
 import net.lenni0451.commons.httpclient.constants.StatusCodes;
 import net.lenni0451.commons.httpclient.content.HttpContent;
+import net.lenni0451.commons.httpclient.retry.RetryConfig;
 import net.lenni0451.simpleinflux.data.DataBuilder;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class InfluxDBConnection {
                 .setHeader(HttpHeaders.AUTHORIZATION, "Token " + connectionProperties.getApiToken())
                 .setConnectTimeout(connectionProperties.getConnectTimeout())
                 .setReadTimeout(connectionProperties.getReadTimeout())
-                .setRetryHandler(new RetryHandler(connectionProperties.getConnectRetries(), connectionProperties.getConnectRetryAfterTries()))
+                .setRetryHandler(new RetryConfig(connectionProperties.getConnectRetries(), connectionProperties.getConnectRetryAfterTries()))
                 .setFollowRedirects(connectionProperties.isFollowRedirects())
                 .setCookieManager(null) //Cookies are not required
                 .setHeader(HttpHeaders.ACCEPT, ContentTypes.APPLICATION_JSON.getMimeType()); //We only accept JSON responses
@@ -49,7 +49,7 @@ public class InfluxDBConnection {
         HttpResponse response = this.httpClient.post(this.url).setContent(HttpContent.string(payload)).execute();
         if (response.getStatusCode() != StatusCodes.NO_CONTENT) {
             //See here for more information: https://docs.influxdata.com/influxdb/v2/write-data/troubleshoot/#review-http-status-codes
-            throw new IOException("Failed to write data to InfluxDB: " + response.getContentAsString());
+            throw new IOException("Failed to write data to InfluxDB: " + response.getContent().getAsString());
         }
     }
 
